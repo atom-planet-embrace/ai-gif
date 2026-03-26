@@ -11,7 +11,7 @@ const BASE_PATH: [&str; 2] = [".", "tests"];
 
 fn process_images<F>(func: F)
 where
-    F: Fn(PathBuf) -> Result<u32, gif::DecodingError>,
+    F: Fn(PathBuf) -> Result<u32, ai_gif::DecodingError>,
 {
     let base: PathBuf = BASE_PATH.iter().collect();
     let test_suites = &["samples"];
@@ -64,8 +64,8 @@ where
 #[test]
 fn render_images() {
     process_images(|path| {
-        let mut decoder = gif::DecodeOptions::new();
-        decoder.set_color_output(gif::ColorOutput::RGBA);
+        let mut decoder = ai_gif::DecodeOptions::new();
+        decoder.set_color_output(ai_gif::ColorOutput::RGBA);
         let file = File::open(path)?;
         let mut decoder = decoder.read_info(file)?;
         let mut crc = Crc32::new();

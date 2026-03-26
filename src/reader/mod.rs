@@ -4,14 +4,16 @@ use core::convert::{TryFrom, TryInto};
 use core::iter::FusedIterator;
 use core::mem;
 use core::num::NonZeroU64;
-use std::io;
-use std::io::prelude::*;
+use no_std_io::io::Read;
 
 use crate::common::{Block, Frame};
 use crate::{AnyExtension, Extension, Repeat};
 
+mod buf_reader;
 mod converter;
 mod decoder;
+
+use buf_reader::BufReader;
 
 pub use self::decoder::{
     Decoded, DecodingError, DecodingFormatError, FrameDataType, FrameDecoder, OutputBuffer,
@@ -211,7 +213,7 @@ impl DecodeOptions {
 }
 
 struct ReadDecoder<R: Read> {
-    reader: io::BufReader<R>,
+    reader: BufReader<R>,
     decoder: StreamingDecoder,
     at_eof: bool,
 }
@@ -243,8 +245,8 @@ impl<R: Read> ReadDecoder<R> {
         Ok(None)
     }
 
-    fn into_inner(self) -> io::BufReader<R> {
-        self.reader
+    fn into_inner(self) -> R {
+        self.reader.into_inner()
     }
 
     fn decode_next_bytes(&mut self, out: &mut OutputBuffer<'_>) -> Result<usize, DecodingError> {
@@ -307,7 +309,7 @@ where
     fn with_no_init(reader: R, decoder: StreamingDecoder, options: DecodeOptions) -> Self {
         Self {
             decoder: ReadDecoder {
-                reader: io::BufReader::new(reader),
+                reader: BufReader::new(reader),
                 decoder,
                 at_eof: false,
             },
@@ -608,7 +610,7 @@ where
     }
 
     /// Abort decoding and recover the `io::Read` instance
-    pub fn into_inner(self) -> io::BufReader<R> {
+    pub fn into_inner(self) -> R {
         self.decoder.into_inner()
     }
 
@@ -650,7 +652,7 @@ impl<R: Read> DecoderIter<R> {
     /// Abort decoding and recover the `io::Read` instance
     ///
     /// Use `for frame in iter.by_ref()` to be able to call this afterwards.
-    pub fn into_inner(self) -> io::BufReader<R> {
+    pub fn into_inner(self) -> R {
         self.inner.into_inner()
     }
 }

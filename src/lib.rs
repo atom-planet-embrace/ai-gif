@@ -17,9 +17,9 @@
 //! ```rust
 //! // Open the file
 //! use std::fs::File;
-//! let mut decoder = gif::DecodeOptions::new();
+//! let mut decoder = ai_gif::DecodeOptions::new();
 //! // Configure the decoder such that it will expand the image to RGBA.
-//! decoder.set_color_output(gif::ColorOutput::RGBA);
+//! decoder.set_color_output(ai_gif::ColorOutput::RGBA);
 //! // Read the file header
 //! let file = File::open("tests/samples/sample_1.gif").unwrap();
 //! let mut decoder = decoder.read_info(file).unwrap();
@@ -35,7 +35,7 @@
 //! The encoder can be used so save simple computer generated images:
 //!
 //! ```rust
-//! use gif::{Frame, Encoder, Repeat};
+//! use ai_gif::{Frame, Encoder, Repeat};
 //! use std::fs::File;
 //! use std::borrow::Cow;
 //!
@@ -78,10 +78,10 @@
 //! // Get pixel data from some source
 //! let mut pixels: Vec<u8> = vec![0; 30_000];
 //! // Create frame from data
-//! let frame = gif::Frame::from_rgb(100, 100, &mut *pixels);
+//! let frame = ai_gif::Frame::from_rgb(100, 100, &mut *pixels);
 //! // Create encoder
 //! let mut image = File::create("target/indexed_color.gif").unwrap();
-//! let mut encoder = gif::Encoder::new(&mut image, frame.width, frame.height, &[]).unwrap();
+//! let mut encoder = ai_gif::Encoder::new(&mut image, frame.width, frame.height, &[]).unwrap();
 //! // Write frame to file
 //! encoder.write_frame(&frame).unwrap();
 //! # }
@@ -89,7 +89,7 @@
 
 // TODO: make this compile
 // ```rust
-// use gif::{Frame, Encoder};
+// use ai_gif::{Frame, Encoder};
 // use std::fs::File;
 // let color_map = &[0, 0, 0, 0xFF, 0xFF, 0xFF];
 // let mut frame = Frame::default();
@@ -110,7 +110,6 @@
 // # })().unwrap();
 // ```
 #![deny(missing_docs)]
-#![cfg(feature = "std")]
 #![allow(unknown_lints)] // Certain lints only apply to later versions of Rust
 #![allow(clippy::manual_range_contains)]
 #![allow(clippy::new_without_default)]
@@ -121,7 +120,6 @@
 
 #[macro_use]
 extern crate alloc;
-extern crate std;
 
 mod common;
 mod encoder;

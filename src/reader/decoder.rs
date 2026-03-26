@@ -7,8 +7,8 @@ use core::default::Default;
 use core::mem;
 use core::num::NonZeroUsize;
 
-use std::error;
-use std::io;
+use core::error;
+use no_std_io::io;
 
 use crate::common::{AnyExtension, Block, DisposalMethod, Extension, Frame};
 use crate::reader::DecodeOptions;
@@ -95,9 +95,15 @@ impl error::Error for DecodingError {
             Self::DecoderNotFound => None,
             Self::EndCodeNotFound => None,
             Self::UnexpectedEof => None,
+            #[cfg(feature = "std")]
             Self::LzwError(ref err) => Some(err),
+            #[cfg(not(feature = "std"))]
+            Self::LzwError(_) => None,
             Self::Format(ref err) => Some(err),
+            #[cfg(feature = "std")]
             Self::Io(ref err) => Some(err),
+            #[cfg(not(feature = "std"))]
+            Self::Io(_) => None,
         }
     }
 }

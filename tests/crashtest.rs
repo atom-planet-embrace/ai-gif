@@ -1,6 +1,6 @@
 #![cfg(feature = "std")]
 
-use gif::DecodeOptions;
+use ai_gif::DecodeOptions;
 use std::{fs, io};
 
 #[test]
@@ -29,7 +29,7 @@ fn try_decode_crash_regression() {
     }
 }
 
-fn try_decode_file(options: &DecodeOptions, data: Vec<u8>) -> Result<(), gif::DecodingError> {
+fn try_decode_file(options: &DecodeOptions, data: Vec<u8>) -> Result<(), ai_gif::DecodingError> {
     let mut reader = options.clone().read_info(io::Cursor::new(data))?;
     while reader.read_next_frame()?.is_some() {}
     Ok(())

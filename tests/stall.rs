@@ -40,9 +40,9 @@ fn decode_on_timer(data: Vec<u8>) {
         .expect("any result");
 }
 
-fn decode(data: &[u8]) -> Result<(), gif::DecodingError> {
-    let mut options = gif::DecodeOptions::new();
-    options.set_color_output(gif::ColorOutput::RGBA);
+fn decode(data: &[u8]) -> Result<(), ai_gif::DecodingError> {
+    let mut options = ai_gif::DecodeOptions::new();
+    options.set_color_output(ai_gif::ColorOutput::RGBA);
 
     let mut decoder = options.read_info(data)?;
     while let Some(_frame) = decoder.read_next_frame()? {}
@@ -56,7 +56,7 @@ fn test_truncated_file() {
     for len in 0..data.len() - 1 {
         let truncated = &data[..len];
         // it's expected to fail often, but should not stall or panic
-        if let Ok(d) = gif::DecodeOptions::new().read_info(truncated) {
+        if let Ok(d) = ai_gif::DecodeOptions::new().read_info(truncated) {
             let _ = d.into_iter().count();
         }
     }
@@ -66,7 +66,7 @@ fn test_truncated_file() {
 fn decode_chopped_anim(r: ChoppedReader) {
     #[expect(clippy::suspicious_map)]
     #[expect(clippy::expect_fun_call)]
-    let frames = gif::DecodeOptions::new()
+    let frames = ai_gif::DecodeOptions::new()
         .read_info(r)
         .unwrap()
         .into_iter()

@@ -1,6 +1,6 @@
 #![cfg(feature = "std")]
 
-use gif::{
+use ai_gif::{
     streaming_decoder::{Decoded, OutputBuffer, StreamingDecoder},
     DecodeOptions, Decoder, DisposalMethod, Encoder, Frame, Repeat,
 };
@@ -159,7 +159,7 @@ fn rebuild_without_reencode(image: &[u8]) {
     assert!(orig.next().is_none());
 
     assert!(rebuilt.next().is_none());
-    assert_eq!(0, rebuilt.into_inner().buffer().len());
+    assert_eq!(0, rebuilt.into_inner().len());
 }
 
 #[test]
@@ -307,7 +307,7 @@ fn check_last_extension_returns() {
         buf.consume(consumed);
         match result {
             Decoded::SubBlock { ext, is_last }
-                if ext.into_known() == Some(gif::Extension::Application) =>
+                if ext.into_known() == Some(ai_gif::Extension::Application) =>
             {
                 let data = decoder.last_ext_sub_block();
                 if expect_label {

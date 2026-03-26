@@ -12,8 +12,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
 
     let input = File::open(&input_path)?;
-    let mut options = gif::DecodeOptions::new();
-    options.set_color_output(gif::ColorOutput::Indexed);
+    let mut options = ai_gif::DecodeOptions::new();
+    options.set_color_output(ai_gif::ColorOutput::Indexed);
     let mut decoder = options.read_info(input)?;
     let screen_width = decoder.width();
     let screen_height = decoder.height();
@@ -24,11 +24,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     while let Some(frame) = decoder.read_next_frame()? {
         let output_path = format!("{output_file_stem}.{frame_number:03}.gif");
         let mut output = File::create(&output_path)?;
-        let mut encoder = gif::Encoder::new(&mut output, screen_width, screen_height, &global_pal)?;
+        let mut encoder =
+            ai_gif::Encoder::new(&mut output, screen_width, screen_height, &global_pal)?;
         encoder.write_frame(frame)?;
         frame_number += 1;
 
-        use gif::DisposalMethod::{Any, Background, Keep, Previous};
+        use ai_gif::DisposalMethod::{Any, Background, Keep, Previous};
         let disposal = match frame.dispose {
             Any => "any",
             Keep => "keep",

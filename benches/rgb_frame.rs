@@ -1,7 +1,7 @@
 use std::{fs, io};
 
+use ai_gif::{Encoder, Frame, Repeat};
 use criterion::{Criterion, Throughput};
-use gif::{Encoder, Frame, Repeat};
 
 const DIR: &str = "benches/samples";
 

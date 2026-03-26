@@ -1,7 +1,7 @@
 //! Reencodes GIF in parallel
 
-use gif::streaming_decoder::FrameDecoder;
-use gif::DecodeOptions;
+use ai_gif::streaming_decoder::FrameDecoder;
+use ai_gif::DecodeOptions;
 use rayon::iter::ParallelBridge;
 use rayon::iter::ParallelIterator;
 use std::env;
@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         input_path.file_stem().unwrap().to_str().unwrap()
     );
     let output = BufWriter::new(File::create(output_file)?);
-    let mut encoder = gif::Encoder::new(output, screen_width, screen_height, &global_pal)?;
+    let mut encoder = ai_gif::Encoder::new(output, screen_width, screen_height, &global_pal)?;
     encoder.set_repeat(repeat)?;
 
     let (send, recv) = std::sync::mpsc::channel();
@@ -53,7 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             frame.make_lzw_pre_encoded();
             // frame is now LZW again, re-encoded
             send.send((frame_number, frame)).unwrap();
-            Ok::<_, gif::DecodingError>(())
+            Ok::<_, ai_gif::DecodingError>(())
         })?;
 
     // Decoding and encoding can happen in parallel, but writing to the GIF file is sequential

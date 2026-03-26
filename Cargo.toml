@@ -1,22 +1,23 @@
 [package]
-name = "gif"
+name = "ai-gif"
 license = "MIT OR Apache-2.0"
 version = "0.14.1"
-description = "GIF de- and encoder"
+description = "A no_std fork of gif"
 authors = ["The image-rs Developers"]
 readme = "README.md"
-homepage = "https://github.com/image-rs/image-gif"
-repository = "https://github.com/image-rs/image-gif"
-documentation = "https://docs.rs/gif"
+homepage = "https://github.com/atom-planet-embrace/ai-gif"
+repository = "https://github.com/atom-planet-embrace/ai-gif"
+documentation = "https://docs.rs/ai-gif"
 edition = "2021"
 include = ["src/**", "LICENSE-*", "README.md", "benches/*.rs"]
-rust-version = "1.62"
+rust-version = "1.81"
 
 [lib]
 bench = false
 
 [dependencies]
-weezl = "0.1.10"
+weezl = { version = "0.1.10", default-features = false, features = ["alloc"] }
+no_std_io = { version = "0.6", default-features = false }
 color_quant = { version = "1.1", optional = true }
 
 [dev-dependencies]
@@ -26,13 +27,12 @@ png = "0.18.0"
 rayon = "1.10.0" # for parallel reencoding example
 
 [features]
-default = ["raii_no_panic", "std", "color_quant"]
+default = ["raii_no_panic", "color_quant"]
 # The `Encoder` finishes writing in `Drop`, and if the write fails, it either ignores the error (`raii_no_panic`) or panics.
 # Use `Encoder::into_inner` to avoid the issue entirely
 raii_no_panic = []
 color_quant = ["dep:color_quant"]
-# Reservation for a feature turning off std
-std = []
+std = ["no_std_io/std", "weezl/std"]
 
 [[bench]]
 name = "decode"

@@ -1,6 +1,8 @@
-# GIF en- and decoding library [![Build Status](https://github.com/image-rs/image-gif/workflows/Rust%20CI/badge.svg)](https://github.com/image-rs/image-gif/actions)
+This is a fork of the [gif](https://crates.io/crates/gif) crate. The git repository is located at https://github.com/image-rs/image-gif.
 
-GIF en- and decoder written in Rust ([API Documentation](https://docs.rs/gif/)).
+# GIF en- and decoding library [![Build Status](https://github.com/atom-planet-embrace/ai-gif/workflows/Rust%20CI/badge.svg)](https://github.com/image-rs/image-gif/actions)
+
+GIF en- and decoder written in Rust ([API Documentation](https://docs.rs/ai-gif/)).
 
 # GIF encoding and decoding library
 
@@ -9,7 +11,7 @@ This library provides all functions necessary to de- and encode GIF files.
 ## High level interface
 
 The high level interface consists of the two types
-[`Encoder`](https://docs.rs/gif/*/gif/struct.Encoder.html) and [`Decoder`](https://docs.rs/gif/*/gif/struct.Decoder.html).
+[`Encoder`](https://docs.rs/ai-gif/*/gif/struct.Encoder.html) and [`Decoder`](https://docs.rs/ai-gif/*/gif/struct.Decoder.html).
 
 ### Decoding GIF files
 
@@ -18,8 +20,8 @@ The high level interface consists of the two types
 use std::fs::File;
 let input = File::open("tests/samples/sample_1.gif").unwrap();
 // Configure the decoder such that it will expand the image to RGBA.
-let mut options = gif::DecodeOptions::new();
-options.set_color_output(gif::ColorOutput::RGBA);
+let mut options = ai_gif::DecodeOptions::new();
+options.set_color_output(ai_gif::ColorOutput::RGBA);
 // Read the file header
 let mut decoder = options.read_info(input).unwrap();
 while let Some(frame) = decoder.read_next_frame().unwrap() {
@@ -32,7 +34,7 @@ while let Some(frame) = decoder.read_next_frame().unwrap() {
 The encoder can be used to save simple computer generated images:
 
 ```rust
-use gif::{Frame, Encoder, Repeat};
+use ai_gif::{Frame, Encoder, Repeat};
 use std::fs::File;
 use std::borrow::Cow;
 
@@ -65,7 +67,7 @@ for state in &beacon_states {
 }
 ```
 
-[`Frame::from_*`](https://docs.rs/gif/*/gif/struct.Frame.html) can be used to convert a true color image to a paletted
+[`Frame::from_*`](https://docs.rs/ai-gif/*/gif/struct.Frame.html) can be used to convert a true color image to a paletted
 image with a maximum of 256 colors:
 
 ```rust
@@ -74,10 +76,10 @@ use std::fs::File;
 // Get pixel data from some source
 let mut pixels: Vec<u8> = vec![0; 30_000];
 // Create frame from data
-let frame = gif::Frame::from_rgb(100, 100, &mut *pixels);
+let frame = ai_gif::Frame::from_rgb(100, 100, &mut *pixels);
 // Create encoder
 let mut image = File::create("target/indexed_color.gif").unwrap();
-let mut encoder = gif::Encoder::new(&mut image, frame.width, frame.height, &[]).unwrap();
+let mut encoder = ai_gif::Encoder::new(&mut image, frame.width, frame.height, &[]).unwrap();
 // Write frame to file
 encoder.write_frame(&frame).unwrap();
 ```

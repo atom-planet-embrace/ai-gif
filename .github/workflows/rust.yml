@@ -1,49 +1,50 @@
 name: Rust CI
 on:
   push:
-    branches: [ master, "version-0.13" ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, "version-0.13" ]
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rust: ["1.62.0", stable, beta, nightly]
-        features: ["", "std", "color_quant"]
+        rust: ["1.81.0", stable, beta, nightly]
+        features: ["", "std", "color_quant", "std,color_quant"]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@master
       with:
         toolchain: ${{ matrix.rust }}
-        override: true
         components: clippy
     - name: build
       run: >
-        cargo build --verbose --no-default-features --features "$FEATURES"
+        cargo build --verbose --no-default-features --features "${{ matrix.features }}"
     - name: clippy
       run: >
-        cargo clippy --verbose --all-targets --no-default-features --features "$FEATURES"
+        cargo clippy --verbose --all-targets --no-default-features --features "${{ matrix.features }}"
       if: ${{ matrix.rust == 'stable' }}
     - name: test
       run: >
-        cargo test --tests --benches --no-default-features --features "$FEATURES"
-      if: ${{ matrix.rust != '1.62.0' }}
-      env:
-        FEATURES: ${{ matrix.features }}
+        cargo test --no-default-features --features "std,${{ matrix.features }}"
+      if: ${{ matrix.rust != '1.81.0' }}
+  no_std:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: thumbv7m-none-eabi
+    - name: build no_std
+      run: >
+        cargo build --target thumbv7m-none-eabi
   rustfmt:
     runs-on: ubuntu-latest
     continue-on-error: false
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions-rs/toolchain@v1
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@stable
       with:
-        toolchain: stable
-        override: true
         components: rustfmt
     - name: Run rustfmt check
-      uses: actions-rs/cargo@v1
-      with:
-        command: fmt
-        args: -- --check
-
+      run: cargo fmt -- --check

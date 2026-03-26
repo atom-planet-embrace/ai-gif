@@ -1,9 +1,9 @@
 #![cfg(feature = "std")]
 
-use gif::{AnyExtension, DecodeOptions, Decoder, Encoder, Frame};
+use ai_gif::{AnyExtension, DecodeOptions, Decoder, Encoder, Frame};
 
 #[cfg_attr(not(feature = "color_quant"), expect(unused_imports))]
-use gif::ColorOutput;
+use ai_gif::ColorOutput;
 
 #[test]
 fn round_trip() {
@@ -72,7 +72,7 @@ fn round_trip_from_image(original: &[u8]) {
     let mut encoder = Encoder::new(vec![], width, height, &global_palette).unwrap();
     encoder.set_repeat(repeat).unwrap();
     encoder
-        .write_raw_extension(AnyExtension(gif::Extension::Comment as _), &[b"hello"])
+        .write_raw_extension(AnyExtension(ai_gif::Extension::Comment as _), &[b"hello"])
         .unwrap();
     for frame in &frames {
         encoder.write_frame(frame).unwrap();
@@ -101,7 +101,7 @@ fn round_trip_from_image(original: &[u8]) {
             assert_eq!(new.palette, reference.palette);
             assert_eq!(new.buffer, reference.buffer);
         }
-        assert_eq!(0, decoder.into_inner().buffer().len());
+        assert_eq!(0, decoder.into_inner().len());
     }
 }
 
@@ -223,8 +223,8 @@ fn palette_fail() {
     };
     assert!(matches!(
         encoder.write_frame(&f),
-        Err(gif::EncodingError::Format(
-            gif::EncodingFormatError::MissingColorPalette
+        Err(ai_gif::EncodingError::Format(
+            ai_gif::EncodingFormatError::MissingColorPalette
         ))
     ));
 }

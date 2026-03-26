@@ -3,9 +3,9 @@
 use alloc::borrow::Cow;
 use alloc::fmt;
 use alloc::vec::Vec;
-use std::error;
-use std::io;
-use std::io::Write;
+use core::error;
+use no_std_io::io;
+use no_std_io::io::Write;
 
 use weezl::{encode::Encoder as LzwEncoder, BitOrder};
 
@@ -77,8 +77,11 @@ impl error::Error for EncodingError {
             Self::FrameBufferTooSmallForDimensions => None,
             Self::OutOfMemory => None,
             Self::WriterNotFound => None,
-            Self::Io(err) => Some(err),
             Self::Format(err) => Some(err),
+            #[cfg(feature = "std")]
+            Self::Io(err) => Some(err),
+            #[cfg(not(feature = "std"))]
+            Self::Io(_) => None,
         }
     }
 }

@@ -1,10 +1,10 @@
+use ai_gif::Decoder;
 use criterion::{measurement::Measurement, BenchmarkGroup, BenchmarkId, Criterion, Throughput};
-use gif::Decoder;
 use std::hint::black_box;
 
 fn read_image(image: &[u8]) -> Option<Vec<u8>> {
     let decoder = Decoder::new(black_box(image));
-    //decoder.set_param(gif::ColorOutput::RGBA);
+    //decoder.set_param(ai_gif::ColorOutput::RGBA);
     let mut reader = decoder.unwrap();
 
     if reader.next_frame_info().unwrap().is_some() {
